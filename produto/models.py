@@ -6,13 +6,15 @@ from PIL import Image
 
 class Produto(models.Model):
     nome = models.CharField(max_length=255)
-    descricao_curta = models.TextField(max_length=255)
-    descricao_longa = models.TextField()
+    descricao_curta = models.TextField(
+        max_length=255, verbose_name='Descrição curta')
+    descricao_longa = models.TextField(verbose_name='Descrição longa')
     imagem = models.ImageField(
         upload_to='produto_imagem/%Y/%m', blank=True, null=True)
     slug = models.SlugField(unique=True)
-    preco_marketing = models.FloatField()
-    preco_marketing_promocional = models.FloatField(default=0)
+    preco_marketing = models.FloatField(verbose_name='Preço marketing')
+    preco_marketing_promocional = models.FloatField(
+        default=0, verbose_name='Preço marketing promocional')
     tipo = models.CharField(
         default='V',
         max_length=1,
@@ -56,8 +58,9 @@ class Produto(models.Model):
 class Variacao(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     nome = models.CharField(max_length=50, blank=True, null=True)
-    preco = models.FloatField()
-    preco_promocional = models.FloatField(default=0)
+    preco = models.FloatField(verbose_name='Preço')
+    preco_promocional = models.FloatField(
+        default=0, verbose_name='Preço promocional')
     estoque = models.PositiveIntegerField(default=1)
 
     def __str__(self):
