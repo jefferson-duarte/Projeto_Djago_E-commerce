@@ -1,3 +1,4 @@
+from django.utils.text import slugify
 from pickletools import optimize
 from django.conf import settings
 from django.db import models
@@ -7,22 +8,30 @@ from PIL import Image
 class Produto(models.Model):
     nome = models.CharField(max_length=255)
     descricao_curta = models.TextField(
-        max_length=255, verbose_name='Descrição curta')
-    descricao_longa = models.TextField(verbose_name='Descrição longa')
+        max_length=255, verbose_name='Descrição Curta')
+    descricao_longa = models.TextField(verbose_name='Descrição Longa')
     imagem = models.ImageField(
         upload_to='produto_imagem/%Y/%m', blank=True, null=True)
-    slug = models.SlugField(unique=True)
-    preco_marketing = models.FloatField(verbose_name='Preço marketing')
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    preco_marketing = models.FloatField(verbose_name='Preço')
     preco_marketing_promocional = models.FloatField(
-        default=0, verbose_name='Preço marketing promocional')
+        default=0, verbose_name='Preço Promo')
     tipo = models.CharField(
         default='V',
         max_length=1,
         choices=(
-            ('V', 'Variação'),
+            ('V', 'Variavel'),
             ('S', 'Simples')
         )
     )
+
+    def get_preco_formatado(self):
+        return f'R$ {self.preco_marketing:.2f}'.replace('.', ',')
+    get_preco_formatado.short_description = 'Preço Normal'
+
+    def get_promocional_formatado(self):
+        return f'R$ {self.preco_marketing_promocional:.2f}'.replace('.', ',')
+    get_promocional_formatado.short_description = 'Preço Promo'
 
     @staticmethod
     def resize_image(img, new_width=800):
@@ -44,6 +53,10 @@ class Produto(models.Model):
         )
 
     def save(self, *args, **kwargs):
+        if not self.slug:
+            slug = f'{slugify(self.nome)}'
+            self.slug = slug
+
         super().save(*args, **kwargs)
 
         max_image_size = 800
@@ -60,7 +73,7 @@ class Variacao(models.Model):
     nome = models.CharField(max_length=50, blank=True, null=True)
     preco = models.FloatField(verbose_name='Preço')
     preco_promocional = models.FloatField(
-        default=0, verbose_name='Preço promocional')
+        default=0, verbose_name='Preço Promocional')
     estoque = models.PositiveIntegerField(default=1)
 
     def __str__(self):
