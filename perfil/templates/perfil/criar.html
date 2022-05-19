@@ -4,16 +4,21 @@
 {% block conteudo %}
 
     <div class="row">
-        <div class="col-lg">
-            <h1>Login</h1>
-        </div>
-        <div class="col-lg">
-            <h1>Cadastro</h1>
+        {% if not request.user.is_authenticated %}
+            <div class="col-lg">
+                <h1>Login</h1>
+            </div>
+        {% endif %}
 
+        <div class="col-lg">
+
+            {% block titulocadastro %}
+                <h1>Cadastro</h1>
+            {% endblock %}
             <form method="POST">
                 {% csrf_token %}
                 {{ userform|crispy }}
-
+                {{ perfilform|crispy }}
                 <div class="row">
                     <div class="col">
                         <button type="submit" class="btn btn-primary btn-block btn-lg">
