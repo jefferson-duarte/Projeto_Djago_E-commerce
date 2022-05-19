@@ -33,10 +33,6 @@
                 </li>
             {% endif %}
 
-            <li class="nav-item">
-                <a class="nav-link" href="#">Disabled</a>
-            </li>
-
             {% if request.session.carrinho %}
                 <li class="nav-item">
                     <a class="nav-link nav-cart-link active" href="{% url 'produto:carrinho' %}">
