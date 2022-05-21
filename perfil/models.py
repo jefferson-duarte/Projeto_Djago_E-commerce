@@ -11,7 +11,7 @@ class Perfil(models.Model):
     idade = models.PositiveIntegerField()
     data_nascimento = models.DateField()
     cpf = models.CharField(max_length=11, verbose_name='CPF')
-    endereco = models.CharField(max_length=5, verbose_name='Endereço')
+    endereco = models.CharField(max_length=50, verbose_name='Endereço')
     complemento = models.CharField(max_length=30)
     bairro = models.CharField(max_length=30)
     cep = models.CharField(max_length=8, verbose_name='CEP')
@@ -55,6 +55,16 @@ class Perfil(models.Model):
 
     def clean(self):
         error_messages = {}
+
+        cpf_enviado = self.cpf or None
+        cpf_salvo = None
+        perfil = Perfil.objects.filter(cpf=cpf_enviado).first()
+
+        if perfil:
+            cpf_salvo = Perfil.cpf
+
+            if cpf_salvo is not None and self.pk != perfil.pk:
+                error_messages['cpf'] = 'CPF já existe.'
 
         if not valida_cpf(self.cpf):
             error_messages['cpf'] = 'Digite um CPF válido.'
