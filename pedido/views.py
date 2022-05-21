@@ -126,9 +126,11 @@ class SalvarPedido(View):
         )
 
 
-class Detalhes(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Detalhes')
+class Detalhes(DispatchLoginRequiredMixin, DetailView):
+    model = Pedido
+    context_object_name = 'pedido'
+    template_name = 'pedido/detalhe.html'
+    pk_url_kwarg = 'pk'
 
 
 class Lista(DispatchLoginRequiredMixin, ListView):
