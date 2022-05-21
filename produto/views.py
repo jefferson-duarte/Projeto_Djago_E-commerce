@@ -27,11 +27,6 @@ class DetalheProduto(DetailView):
 
 class AdicionarAoCarrinho(View):
     def get(self, *args, **kwargs):
-        # TODO: Remove o carrinho
-        # if self.request.session.get('carrinho'):
-        #     del self.request.session['carrinho']
-        #     self.request.session.save()
-
         http_referer = self.request.META.get(
             'HTTP_REFERER',
             reverse('produto:lista')
